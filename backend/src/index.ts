@@ -24,5 +24,5 @@ app.get('/api/test', async (req: Request, res: Response) => {
 });
 
 app.listen(5501, () =>{
-    console.log("server is running on loacvlhost 5501")
+    console.log("server is running on loacalhost 5501")
 })
