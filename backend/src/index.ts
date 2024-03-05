@@ -58,7 +58,10 @@ const app = express();
 // Middleware setup
 app.use(express.json()); // Parse incoming request bodies as JSON
 app.use(express.urlencoded({ extended: true })); // Parse incoming request bodies as URL encoded data
-app.use(cors()); // Enable CORS for all routes
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials : true,
+})); // Enable CORS for all routes
 
 app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)

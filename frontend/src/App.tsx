@@ -27,7 +27,7 @@ const SearchPage = () => {
 
 // Register Page component
 const RegisterPage = () => {
-  return <Register />;
+  return <Register/>;
 }
 
 export default App;
