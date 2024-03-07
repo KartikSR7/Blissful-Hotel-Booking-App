@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Register from "./pages/Register";
+import SignIn from "./pages/SignIn";
 
 const App = () => {
   return (
@@ -9,6 +10,7 @@ const App = () => {
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/search" element={<Layout><SearchPage /></Layout>} />
         <Route path="/register" element={<Layout><RegisterPage /></Layout>} />
+        <Route path="/sign-in" element={<Layout><SignIn/></Layout>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
@@ -29,5 +31,7 @@ const SearchPage = () => {
 const RegisterPage = () => {
   return <Register/>;
 }
+
+<Route />
 
 export default App;

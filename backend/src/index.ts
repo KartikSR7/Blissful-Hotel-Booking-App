@@ -34,6 +34,7 @@ import "dotenv/config"; // Importing dotenv for environment configuration
 import mongoose, { ConnectOptions } from 'mongoose';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
+import cookieParser from"cookie-parser";
 
 const uri = process.env.MONGODB_CONNECTION_STRING as string;
 
@@ -54,7 +55,7 @@ mongoose.connect(uri, options).then(() => {
 
 // Creating an instance of Express
 const app = express();
-
+app.use(cookieParser());
 // Middleware setup
 app.use(express.json()); // Parse incoming request bodies as JSON
 app.use(express.urlencoded({ extended: true })); // Parse incoming request bodies as URL encoded data
