@@ -46,12 +46,14 @@ const options: ConnectOptions = {
   //sslValidate: false, // Disable SSL certificate validation
 };
 
-mongoose.connect(uri, options).then(() => {
-  console.log('Connected to MongoDB');
-}).catch((error) => {
-  console.log('Error connecting to MongoDB:', error)
-  sslvalidate: false;
-});
+// mongoose.connect(uri, options).then(() => {
+//   console.log('Connected to MongoDB');
+// }).catch((error) => {
+//   console.log('Error connecting to MongoDB:', error)
+//   sslvalidate: false;
+// });
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
+.then(() =>console.log("Connected tp database: ", process.env.MONGODB_CONNECTION_STRING));
 
 // Creating an instance of Express
 const app = express();
