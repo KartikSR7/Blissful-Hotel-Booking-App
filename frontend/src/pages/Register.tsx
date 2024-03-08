@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form"; // Import useForm from react-hook-form library for form management
-import { useMutation } from "react-query"; // Import useMutation from react-query library for managing mutations
+import { useMutation, useQueryClient } from "react-query"; // Import useMutation from react-query library for managing mutations
 import * as apiClient from '../api-client'; // Import apiClient module
 import { useAppContext } from "../contexts/AppContext"; // Import useAppContext hook from AppContext
+import { useNavigate } from "react-router";
 
 export type RegisterFormData = {
     firstName: string;
@@ -12,6 +13,8 @@ export type RegisterFormData = {
 };
 
 const Register = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const { showToast } = useAppContext(); // Destructure showToast from AppContext
 
     // Destructure register, watch, handleSubmit, and errors from useForm hook
@@ -19,8 +22,10 @@ const Register = () => {
 
     // Use useMutation hook to handle registration mutation
     const mutation = useMutation(apiClient.register, {
-        onSuccess: () => {
-            showToast({ message: "Registration Successful", type: "SUCCESS" }); // Show success toast message
+        onSuccess: async() => {
+            showToast({ message: "Registration Successful", type: "SUCCESS" }); 
+            await queryClient.invalidateQueries("validateToken");
+            navigate("/");// Show success toast message
         },
         onError: (error: Error) => {
             showToast({ message: error.message, type: "ERROR" }); // Show error toast message

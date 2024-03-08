@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 // Importing the useAppContext hook from the AppContext module to access application context
 import { useAppContext } from "../contexts/AppContext";
+import SignOutButton from "./SignOutButton";
 
 // Header component definition
 const Header = () => {
@@ -21,13 +22,14 @@ const Header = () => {
                     {/* Conditional rendering based on user authentication status */}
                     {isLoggedIn ? ( /* If user is logged in */
                         <> {/* Fragment shorthand */}
+                        
                             {/* Link to the "My Bookings" page */}
-                            <Link to="/my-bookings">My Bookings</Link>
+                            <Link className="flex items-center text-white px-3 font-bold hover:gbblue-600"to="/my-bookings">My Bookings</Link>
                             {/* Link to the "My Hotels" page */}
                             <Link to="/my-hotels">My Hotels</Link>
                             {/* Button for signing out */}
-                            <button>Sign Out</button>
-                        </> /* End of fragment */
+                            <SignOutButton />
+                            </> /* End of fragment */
                     ) : ( /* If user is not logged in */
                         <Link to="/sign-in" className="flex bg-white items-center text-blue-600 px-3 font-bold hover:bg-gray-100 hover:text-green-500">
                             Sign In

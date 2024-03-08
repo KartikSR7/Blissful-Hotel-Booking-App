@@ -2,10 +2,14 @@
 import { useForm } from "react-hook-form";
 
 // Import the `useMutation` hook from the "react-query" library
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 // Import all exports from the "../api-client" file and alias it as `apiClient`
 import * as apiClient from '../api-client';
+
+// Import the `useAppContext` and `useNavigate` hooks from their respective libraries
+import { useAppContext } from "../contexts/AppContext";
+import { useNavigate } from "react-router";
 
 // Define a type for the form data expected in the sign-in form
 export type SignInFormData ={
@@ -15,6 +19,12 @@ export type SignInFormData ={
 
 // Define the `SignIn` component
 const SignIn = () => {
+    // Retrieve `showToast` function from the application context
+    const {showToast} = useAppContext();
+    // Initialize the `navigate` function for redirecting users
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
   // Destructure the `register` function and `errors` from the result of `useForm` hook
   const { register, formState: { errors }, handleSubmit } = useForm<SignInFormData>();
 
@@ -22,12 +32,16 @@ const SignIn = () => {
   const mutation = useMutation(apiClient.signIn, {
     // Action to perform when mutation succeeds
     onSuccess: () => {
-      console.log("Login successful");
+      // Display a success toast message and navigate to the home page
+      showToast({message: "Signed in successfully", type: "SUCCESS"});
+      await queryClient.invalidateQueries("validateToken");
+
+      navigate("/");
     },
     // Action to perform when mutation fails
     onError: (error: Error) => {
-      // Handle error, e.g., show a toast
-      console.error("Error during sign-in:", error);
+      // Handle error, e.g., show a toast with the error message
+      showToast({message: error.message, type: "ERROR"});
     },
   });
 
