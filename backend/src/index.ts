@@ -35,6 +35,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import userRoutes from './routes/users';
 import authRoutes from './routes/auth';
 import cookieParser from"cookie-parser";
+import path from 'path';
 
 const uri = process.env.MONGODB_CONNECTION_STRING as string;
 
@@ -53,7 +54,7 @@ const options: ConnectOptions = {
 //   sslvalidate: false;
 // });
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING as string)
-.then(() =>console.log("Connected tp database: ", process.env.MONGODB_CONNECTION_STRING));
+//.then(() =>console.log("Connected tp database: ", process.env.MONGODB_CONNECTION_STRING));
 
 // Creating an instance of Express
 const app = express();
@@ -65,6 +66,8 @@ app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials : true,
 })); // Enable CORS for all routes
+
+app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
 app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)

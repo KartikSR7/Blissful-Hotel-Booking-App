@@ -2,5 +2,11 @@
   "dependencies": {
     "cors": "^2.8.5",
     "react": "^18.2.0"
-  }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.1",
+    "@types/node": "^20.11.25"
+  },
+  "scripts": {}
 }
+ 
