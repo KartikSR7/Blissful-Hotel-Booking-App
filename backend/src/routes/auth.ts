@@ -19,7 +19,7 @@ router.post("/login", [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ message: errors.array() });
-    }
+    };
 
     // Destructure email and password from request body
     const { email, password } = req.body;
