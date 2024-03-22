@@ -81,6 +81,10 @@ app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/my-hotels", myHotelRoutes)
 
+app.get("*", (req: Request, res: Response)=>{
+    res.sendFile(path.join(__dirname + "/../../frontend/dist/index.html"));
+});
+
 // Define a default route for testing purposes
 app.get('/api/test', async (req: Request, res: Response) => {
     // Sending a JSON response
