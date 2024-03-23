@@ -46,11 +46,30 @@ test("should allow user to manage hotel", async ({ page }) => {
     await page.locator('[name="adultCount"]').fill("2");
     await page.locator('[name="childCount"]').fill("4");
 
+    // Set input files for hotel images
     await page.setInputFiles('[name="imageFiles"]',[
         path.join(__dirname, "files", "1.jpg"),
         path.join(__dirname, "files", "2.jpg")
     ]);
 
+    // Click on the save button
     await page.getByRole('button',{ name: "Save"}).click();
+    // Expect success message after saving hotel
     await expect(page.getByText("Hotel Saved!")).toBeVisible();
+});
+
+// Define a test scenario to view hotels
+test("should allow user to view hotels", async ({ page }) => {
+    // Navigate to the user's hotels page
+    await page.goto(`${UI_URL}/my-hotels`);
+
+    // Expect various details of a hotel to be visible
+    await expect(page.getByText("Dublin Gateaways")).toBeVisible();
+    await expect(page.getByText("Lorem ipsum dolor sit amet")).toBeVisible();
+    await expect(page.getByText("Dublin, Ireland")).toBeVisible();
+    await expect(page.getByText("All Inclusive")).toBeVisible();
+    await expect(page.getByText("£119 per night")).toBeVisible();
+    await expect(page.getByText("2 adults, 3 children")).toBeVisible();
+    await expect(page.getByText("2 Star Rating")).toBeVisible();
+    await expect(page.getByRole("link", { name: "View Details"})).toBeVisible();
 });

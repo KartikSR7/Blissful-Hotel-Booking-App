@@ -1,7 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
+// import { HotelType } from "../shared/types";
 
 // Define the structure of the Hotel document
-export interface HotelType extends Document {
+export type HotelType = {
   userId: string;
   name: string;
   city: string;
@@ -15,6 +16,7 @@ export interface HotelType extends Document {
   starRating: number;
   imageUrls: string[];
   lastUpdated: Date;
+  newProperty: string; // Corrected the type from String to string
 }
 
 // Define the schema for the Hotel document
@@ -32,6 +34,7 @@ const hotelSchema: Schema<HotelType> = new Schema({
   starRating: { type: Number, required: true, min: 1 }, 
   imageUrls: [{ type: String, required: true }],
   lastUpdated: { type: Date, required: true },
+  newProperty: { type: String } 
 });
 
 // Define the Hotel model

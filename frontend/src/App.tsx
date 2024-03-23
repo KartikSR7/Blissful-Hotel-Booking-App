@@ -6,16 +6,20 @@ import AddHotel from "./pages/AddHotel";
 import { useAppContext } from "./contexts/AppContext";
 
 const App = () => {
-  const {isLoggedIn} = useAppContext();
+  const { isLoggedIn } = useAppContext();
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Layout><HomePage /></Layout>} />
         <Route path="/search" element={<Layout><SearchPage /></Layout>} />
         <Route path="/register" element={<Layout><RegisterPage /></Layout>} />
-        <Route path="/sign-in" element={<Layout><SignIn/></Layout>} />
-        {isLoggedIn && 
-        <Route path="/add-hotel" element={<Layout><AddHotel /></Layout>} />}
+        <Route path="/sign-in" element={<Layout><SignInPage /></Layout>} />
+        {isLoggedIn && (
+          <>
+            <Route path="/add-hotel" element={<Layout><AddHotel/></Layout>} />;
+            <Route path="/my-hotels" element={<Layout><MyHotels/></Layout>} />;
+          </>
+        )}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
@@ -37,6 +41,14 @@ const RegisterPage = () => {
   return <Register/>;
 }
 
-<Route />
+// Sign In Page component
+const SignInPage = () => {
+  return <SignIn/>;
+}
+
+// My Hotels Page component
+const MyHotels = () => {
+  return <AddHotel/>;
+}
 
 export default App;

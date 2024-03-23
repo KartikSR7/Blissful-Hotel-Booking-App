@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import multer from "multer";
 import cloudinary from "cloudinary";
 import Hotel from "../models/hotel";
+import {HotelType} from "../shared/types";
 import verifyToken from "../middleware/auth";
 import { body } from "express-validator";
 
@@ -33,9 +34,9 @@ upload.array("imageFiles", 6), async (req: Request, res: Response) => {
         const newHotel = req.body;
 
         // 1. Upload the images to Cloudinary
-        const uploadPromises = imageFiles.map(async (imageFile) => {
-            const b64 = Buffer.from(imageFile.buffer).toString("base64");
-            const dataURI = "data:" + imageFile.mimetype + ";base64," + b64;
+        const uploadPromises = imageFiles.map(async (image) => {
+            const b64 = Buffer.from(image.buffer).toString("base64");
+            const dataURI = "data:" + image.mimetype + ";base64," + b64;
             const result = await cloudinary.v2.uploader.upload(dataURI);
             return result.url;
         });
@@ -55,6 +56,19 @@ upload.array("imageFiles", 6), async (req: Request, res: Response) => {
     } catch (error) {
         console.error("Error creating a Hotel: ", error);
         res.status(500).json({ message: "Something went wrong" });
+    }
+});
+
+
+router.get("/", verifyToken, async(req: Request, res: Response)=>{
+    const hotels = await Hotel.find({userId: req.userId })
+    res.json(hotels)
+
+    try{
+        const hotels = await Hotel.find({userId: req.userId })
+        res.json(hotels)
+    }catch(error){
+        res.status(500).json({message: "Something went wrong"})
     }
 });
 
