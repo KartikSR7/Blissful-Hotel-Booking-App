@@ -9,7 +9,7 @@ const AddHotel = () => {
 
     // Define mutation function to add hotel
     const { mutate, isLoading } = useMutation(apiClient.addMyHotel, {
-        // onSuccess callback function to handle successful mutation
+        // onSuccess callback function to handle successful mutation  
         onSuccess: () => {
             showToast({ message: "Hotel Saved", type: "SUCCESS" });
         },
@@ -25,7 +25,23 @@ const AddHotel = () => {
     };
 
     // Render ManageHotelForm component with onSave and isLoading props
-    return <ManageHotelForm onSave={handleSave} isLoading={isLoading} />;
+    return <ManageHotelForm onSave={handleSave} isLoading={isLoading} hotel={{
+        userId: "",
+        name: "",
+        city: "",
+        country: "",
+        description: "",
+        type: "",
+        adultCount: 0,
+        childCount: 0,
+        facilities: [],
+        pricePerNight: 0,
+        starRating: 0,
+        imageUrls: [],
+        lastUpdated: new Date(),
+        newProperty: ""
+    }} />;
 };
+
 
 export default AddHotel;
