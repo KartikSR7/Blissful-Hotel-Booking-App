@@ -19,6 +19,7 @@ export const register = async (formData: RegisterFormData) => {
     });
 
     // Parsing response body
+
     const responseBody = await response.json();
 
     // Handling errors if response is not OK
@@ -54,7 +55,7 @@ export const signIn = async (formData: SignInFormData) => {
 export const validateToken = async () => {
     // Sending a GET request to validate user token
     const response = await fetch(`${API_BASE_URL}/api/auth/validate`, {
-        method: "GET",
+        method: "POST",
         credentials: "include"
     });
 
@@ -125,3 +126,22 @@ export const fetchMyHotelById = async (hotelId: string) : Promise<HotelType> => 
 
     return response.json();
 };
+
+export const updateMyHotelById = async (hotelFormData: FormData) => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/my-hotels/${hotelFormData.get("hotelId")}`,
+      {
+        method: "PUT",
+        body: hotelFormData,
+        credentials: "include",
+      }
+    );
+  
+    if (!response.ok) {
+      throw new Error("Failed to update Hotel");
+    }
+  
+    return response.json();
+  };
+  
+

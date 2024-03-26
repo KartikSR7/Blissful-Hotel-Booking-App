@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router";
 import * as apiClient from '../api-client';
 import ManageHotelForm from '../forms/ManageHotelForm/ManageHotelForm';
@@ -6,9 +6,10 @@ import ManageHotelForm from '../forms/ManageHotelForm/ManageHotelForm';
 const EditHotel = () => {
     // Get the hotelId from the URL parameters
     const { hotelId } = useParams();
+    
 
     // Fetch the hotel data using react-query
-    const { data: hotel, isLoading, isError } = useQuery(
+    const { data: hotel } = useQuery(
         "fetchMyHotelById",
         // Function to fetch hotel data
         () => apiClient.fetchMyHotelById(hotelId || ''), // Pass hotelId only if it's defined
@@ -18,23 +19,23 @@ const EditHotel = () => {
         }
     );
 
-    // Render loading state while fetching data
-    if (isLoading) {
-        return <div>Loading...</div>;
+   // Define useMutation to update hotel data
+   const { mutate, isLoading} = useMutation(apiClient.updateMyHotelById, {
+    onSuccess: () => {
+        // Add logic for successx
+    },
+    onError: () => {
+        // Add logic for error
     }
+});
 
-    // Render error message if there's an error fetching data
-    if (isError) {
-        return <div>Error fetching data</div>;
-    }
-
-    // Add check for hotel before passing to form
-    if (hotel) {
-        return <ManageHotelForm hotel={hotel} onSave={() => { }} isLoading={isLoading} />;
-    } else {
-        return <div>Hotel not found</div>;
-    }
+// Handle save action
+const handleSave = (hotelFormData: FormData) => {
+    mutate(hotelFormData); // Call mutate function to update hotel data
 };
 
+return <ManageHotelForm hotel={hotel} onSave={handleSave} isLoading={isLoading} />
+
+};
 
 export default EditHotel;

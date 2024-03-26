@@ -7,6 +7,7 @@ import ImageSection from "./ImagesSection"; // Import ImagesSection component
 import { HotelType } from "../../../../backend/src/shared/types"; // Import HotelType interface
 import { useEffect } from "react";
 
+
 // Define the type for form data
 export type HotelFormData = {
   name: string;
@@ -23,27 +24,25 @@ export type HotelFormData = {
   childCount: number;
 };
 
-// Define props for ManageHotelForm component
 type Props = {
-  hotel: HotelType;
-  onSave: (hotelFormData: FormData) => void; // Function to handle saving form data
-  isLoading: boolean; // Loading state
+  hotel?: HotelType;
+  onSave: (hotelFormData: FormData) => void;
+  isLoading: boolean;
 };
 
-// Define ManageHotelForm component
 const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
-  // Initialize form methods using useForm hook
   const formMethods = useForm<HotelFormData>();
   const { handleSubmit, reset } = formMethods;
 
-  // Reset form when hotel prop changes
   useEffect(() => {
     reset(hotel);
   }, [hotel, reset]);
 
-  // Handle form submission
   const onSubmit = handleSubmit((formDataJson: HotelFormData) => {
     const formData = new FormData();
+    if (hotel) {
+      formData.append("hotelId", String(hotel._id));
+    }
     formData.append("name", formDataJson.name);
     formData.append("city", formDataJson.city);
     formData.append("country", formDataJson.country);
@@ -58,6 +57,13 @@ const ManageHotelForm = ({ onSave, isLoading, hotel }: Props) => {
     formDataJson.facilities.forEach((facility, index) => {
       formData.append(`facilities[${index}]`, facility);
     });
+
+    // Append imageUrls to formData
+    if (formDataJson.imageUrls) {
+      formDataJson.imageUrls.forEach((url, index) => {
+        formData.append(`imageUrls[${index}]`, url);
+      });
+    }
 
     // Append imageFiles to formData
     Array.from(formDataJson.imageFiles).forEach((imageFile) => {

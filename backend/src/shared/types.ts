@@ -1,4 +1,5 @@
 export type HotelType = {
+    _id(arg0: string, _id: any): unknown;
     userId: string;
     name: string;
     city: string;

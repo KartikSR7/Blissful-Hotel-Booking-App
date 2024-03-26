@@ -49,7 +49,7 @@ const ImageSection = () => {
                     className="w-full  text-gray-700 font-normal"
                     {...register("imageFiles", { // Registering file input with React Hook Form
                         validate: (imageFiles) => { 
-                            const totalLength = imageFiles.length;
+                            const totalLength = imageFiles.length + (existingImageUrls?.length || 0);
 
                             if(totalLength === 0){
                                 return "At least one image is required";
