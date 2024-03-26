@@ -2,10 +2,12 @@ import { useMutation, useQuery } from "react-query";
 import { useParams } from "react-router";
 import * as apiClient from '../api-client';
 import ManageHotelForm from '../forms/ManageHotelForm/ManageHotelForm';
+import { useAppContext } from "../contexts/AppContext";
 
 const EditHotel = () => {
     // Get the hotelId from the URL parameters
     const { hotelId } = useParams();
+    const {showToast} = useAppContext();
     
 
     // Fetch the hotel data using react-query
@@ -22,11 +24,11 @@ const EditHotel = () => {
    // Define useMutation to update hotel data
    const { mutate, isLoading} = useMutation(apiClient.updateMyHotelById, {
     onSuccess: () => {
-        // Add logic for successx
+      showToast({ message: "Hotel Saved!", type: "SUCCESS"});
     },
     onError: () => {
-        // Add logic for error
-    }
+        showToast({message: "Error Saving Hotel", type: "ERROR"});
+    },
 });
 
 // Handle save action

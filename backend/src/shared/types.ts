@@ -1,5 +1,8 @@
+import Hotel from "../models/hotel";
+
 export type HotelType = {
-    _id(arg0: string, _id: any): unknown;
+    
+    _id: string;
     userId: string;
     name: string;
     city: string;
@@ -14,4 +17,15 @@ export type HotelType = {
     imageUrls: string[];
     lastUpdated: Date;
     newProperty: string; // Corrected the type from String to string
+  };
+
+  export type HotelSearchResponse = {
+    data: HotelType[];
+    pagination: {
+      total: number;
+      page: number;
+      pages: number;
+    }
   }
+  
+  
