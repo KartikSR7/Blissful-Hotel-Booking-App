@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 // Define the structure of the Hotel document
 export type HotelType = {
-  userId: string;
+  _id: string;
   name: string;
   city: string;
   country: string;
@@ -21,7 +21,7 @@ export type HotelType = {
 
 // Define the schema for the Hotel document
 const hotelSchema: Schema<HotelType> = new Schema({
-  userId: { type: String, required: true },
+  _id: { type: String, required: true },
   name: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },

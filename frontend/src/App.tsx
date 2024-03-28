@@ -1,10 +1,11 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, Search } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Register from "./pages/Register";
 import SignIn from "./pages/SignIn";
 import AddHotel from "./pages/AddHotel";
 import { useAppContext } from "./contexts/AppContext";
 import EditHotel from "./pages/EditHotel";
+import Search from "./pages/Search";
 
 const App = () => {
   const { isLoggedIn } = useAppContext();
@@ -12,7 +13,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Layout><HomePage /></Layout>} />
-        <Route path="/search" element={<Layout><SearchPage /></Layout>} />
+        <Route path="/search" element={<Layout><Search/></Layout>} />
         <Route path="/register" element={<Layout><RegisterPage /></Layout>} />
         <Route path="/sign-in" element={<Layout><SignInPage /></Layout>} />
         {isLoggedIn && (
@@ -34,7 +35,7 @@ const HomePage = () => {
 }
 
 // Search Page component
-const SearchPage = () => {
+const Search = () => {
   return <p>Search Page</p>;
 }
 

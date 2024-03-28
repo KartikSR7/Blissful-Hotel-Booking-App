@@ -70,7 +70,7 @@ router.get("/:id", verifyToken, async (req: Request, res: Response) => {
             userId: req.userId
         });
         if (!hotel) {
-            return res.status(404).json({ message: 'Hotel not found' });
+            return res.status(404).json({ message: `Hotel not found` });
         }
         res.json(hotel);
     } catch (error) {
