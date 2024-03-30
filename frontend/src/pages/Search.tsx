@@ -3,10 +3,15 @@ import { useSearchContext } from "../contexts/SearchContext";
 import * as apiClient from '../api-client';
 import { useState } from "react";
 import SearchResultsCard from "../components/SearchResultsCard";
+import Pagination from "../components/Pagination";
+import StarRatingFilter from "../components/StarRatingFilter";
+import HotelTypesFilter from "../components/HotelTypesFilter";
 
 const Search = () => {
     const search = useSearchContext();
     const [page, setPage] = useState<number>(1);
+    const [selectedStars, setSelectedStars] = useState<string[]>([]); 
+    const [selectedHotelTypes, setSelectedHotelTypes] = useState<string[]>([]); 
 
     const searchParams = {
         destination: search.destination,
@@ -15,26 +20,50 @@ const Search = () => {
         adultCount: search.adultCount.toString(),
         childCount: search.childCount.toString(),
         page: page.toString(),
-    }
+        stars: selectedStars, 
+        types: selectedHotelTypes // Added types parameter
+    };
 
     const { data: hotelData } = useQuery(["searchHotels", searchParams], () =>
         apiClient.searchHotels(searchParams)
     );
 
-    // Render the Search Page component
+    const handleStarsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const starRating = event.target.value;
+
+        setSelectedStars((prevStars) =>
+            event.target.checked
+                ? [...prevStars, starRating]
+                : prevStars.filter(star => star !== starRating)
+        );
+    };
+
+    const handleHotelTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const hotelType = event.target.value;
+
+        setSelectedHotelTypes((prevHotelTypes) =>
+            event.target.checked
+                ? [...prevHotelTypes, hotelType] // Corrected variable name
+                : prevHotelTypes.filter((type) => type !== hotelType) // Corrected variable name
+        );
+    };
+
     return (
         <>
-            {/* Search Page */}
             <div className="grid grid-cols-1-[250px_1fr] gap-5 ">
-                {/* sticky will stick with window when scrolled up or down */}
-                <div className="rounded-1g border border-slate-300 p-5 h-fit sticky top-10">
-                    
-                    {/* space out all the stuff in the filters columns */}
+                <div className="rounded-lg border border-slate-300 p-5 h-fit sticky top-10">
                     <div className="space-y-5">
                         <h3 className="text-lg font-semibold border-b border-slate-300 pb-5">
                             Filter by:
                         </h3>
-                        {/* TODO: FILTERS */}
+                        <StarRatingFilter
+                            selectedStars={selectedStars}
+                            onChange={handleStarsChange}
+                        />
+                        <HotelTypesFilter
+                            selectedHotelsTypes={selectedHotelTypes}
+                            onChange={handleHotelTypeChange}
+                        />
                     </div>
                 </div>
                 <div className="flex flex-col gap-5 ">
@@ -43,11 +72,17 @@ const Search = () => {
                             {hotelData?.pagination.total} Hotels found
                             {search.destination ? ` in ${search.destination}` : ""}
                         </span>
-                        {/* TODO sort options */}
                     </div>
-                    {hotelData?.data.map((hotel)=>(
-                        <SearchResultsCard hotel={hotel}/>
+                    {hotelData?.data.map((hotel, index) => (
+                        <SearchResultsCard key={index} hotel={hotel} />
                     ))}
+                    <div>
+                        <Pagination
+                            page={hotelData?.pagination.page || 1}
+                            pages={hotelData?.pagination.pages || 1}
+                            onPageChange={(page) => setPage(page)}
+                        />
+                    </div>
                 </div>
             </div>
         </>

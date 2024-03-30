@@ -5,7 +5,7 @@ import SignIn from "./pages/SignIn";
 import AddHotel from "./pages/AddHotel";
 import { useAppContext } from "./contexts/AppContext";
 import EditHotel from "./pages/EditHotel";
-import Search from "./pages/Search";
+// import Search from "./pages/Search";
 
 const App = () => {
   const { isLoggedIn } = useAppContext();

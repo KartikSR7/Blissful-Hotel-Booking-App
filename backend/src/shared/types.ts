@@ -28,4 +28,5 @@ export type HotelType = {
     }
   }
   
+  export default HotelSearchResponse;
   
