@@ -3,17 +3,33 @@ import express, { Request, Response } from "express";
 import User from "../models/user"; // Assuming this is a local file importing a User model
 import jwt from "jsonwebtoken";
 import { check, validationResult } from "express-validator";
+import verifyToken from "../middleware/auth";
 
 // Create an Express router
 const router = express.Router();
 
+router.get("/me" , verifyToken, async(req:Request, res:Response)=>{
+   const userId= req.userId;
+
+   try{
+     const user = await User.findById(userId).select(["-password"]);   // Selecting all fields except passworif(!user){
+        if(!user){
+        return res.status(400).json({message: "User not found"}); 
+     }
+     res.json(user);
+   } catch (error){
+    console.log(error)
+    res.status(500).json( {"message": "Error getting user data"} );
+   }
+})
 // Define a route for user registration
 router.post("/register", [
     // Validate user registration data using express-validator
     check("firstName", "First Name is required").isString(),
     check("lastName", "Last Name is required").isString(),
     check("email", "Email is required").isEmail(),
-    check("password", "Password with 6 or more characters is required").isLength({ min: 6 }),
+    check("password", "Password with 6 or more characters is required").isLength({ 
+        min: 6 }),
 ], async (req: Request, res: Response) => {
     // Check for validation errors
     const errors = validationResult(req);

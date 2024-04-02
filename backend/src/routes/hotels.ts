@@ -58,7 +58,7 @@ router.get("/search", async (req: Request, res: Response) => {
         const total = await Hotel.countDocuments(query);
 
         const response: HotelSearchResponse = {
-            data: hotels,
+              data: hotels,
               pagination: {
                 total,
                 page: pageNumber,

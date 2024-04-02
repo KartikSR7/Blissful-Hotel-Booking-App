@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form"; // Importing useForm hook from react-
 import { useMutation, useQueryClient } from "react-query"; // Importing useMutation and useQueryClient hooks from react-query library
 import * as apiClient from '../api-client'; // Importing apiClient module
 import { useAppContext } from "../contexts/AppContext"; // Importing useAppContext hook from AppContext context
-import { useNavigate } from "react-router"; // Importing useNavigate hook from react-router library
+import { useLocation, useNavigate } from "react-router"; // Importing useNavigate hook from react-router library
 import { Link } from "react-router-dom"; // Importing Link component from react-router-dom library
 
 // Defining type for form data
@@ -20,6 +20,8 @@ const SignIn = () => {
     // Using useQueryClient hook to get queryClient instance
     const queryClient = useQueryClient();
 
+    const location = useLocation();
+
     // Destructuring useForm hook to get register, errors, and handleSubmit functions
     const { register, formState: { errors }, handleSubmit } = useForm<SignInFormData>();
 
@@ -32,7 +34,7 @@ const SignIn = () => {
             // Invalidate the "validateToken" query
             await queryClient.invalidateQueries("validateToken");
             // Navigate to home page
-            navigate("/");
+            navigate(location.state?.from?.pathname || "/"); 
         },
         // onError callback to handle sign-in error
         onError: (error: Error) => {
