@@ -1,5 +1,15 @@
 import Hotel from "../models/hotel";
 
+
+export type UserType = {
+  _id: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+};
+
 export type HotelType = {
     
     _id: string;

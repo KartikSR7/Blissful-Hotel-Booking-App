@@ -1,10 +1,21 @@
 // Importing types
 import { RegisterFormData } from "./pages/Register";
 import { SignInFormData } from "./pages/SignIn";
-import { HotelSearchResponse, HotelType } from '../../backend/src/shared/types';
+import { HotelSearchResponse, HotelType, UserType } from '../../backend/src/shared/types';
 
 // Retrieving API base URL from environment variables
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+
+export const fetchCurrentUser= async(): Promise<UserType> =>{
+    const response = await fetch(`${API_BASE_URL}api/users/`,
+    {credentials: "include"}
+
+    )
+    if(!response.ok){
+        throw new Error("Could not get current user data");
+    }
+    return response.json();
+}
 
 // Function to register a user
 export const register = async (formData: RegisterFormData) => {
