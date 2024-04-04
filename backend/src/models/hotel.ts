@@ -1,26 +1,21 @@
 import mongoose, { Schema, Document } from "mongoose";
-// import { HotelType } from "../shared/types";
+import { BookingType, HotelType } from "../shared/types";
 
-// Define the structure of the Hotel document
-export type HotelType = {
-  _id: string;
-  name: string;
-  city: string;
-  country: string;
-  description: string;
-  type: string;
-  adultCount: number;
-  childCount: number;
-  facilities: string[];
-  pricePerNight: number;
-  starRating: number;
-  imageUrls: string[];
-  lastUpdated: Date;
-  newProperty: string; // Corrected the type from String to string
-}
+// Define the schema for the Booking document
+const bookingSchema = new mongoose.Schema<BookingType>({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true },
+  adultCount: { type: Number, required: true },
+  childCount: { type: Number, required: true },
+  checkIn: { type: Date, required: true },
+  checkOut: { type: Date, required: true },
+  userId: { type: String, required: true },
+  totalCost: { type: Number, required: true },
+});
 
 // Define the schema for the Hotel document
-const hotelSchema: Schema<HotelType> = new Schema({
+const hotelSchema: Schema<HotelType & Document> = new Schema({
   _id: { type: String, required: true },
   name: { type: String, required: true },
   city: { type: String, required: true },
@@ -31,13 +26,15 @@ const hotelSchema: Schema<HotelType> = new Schema({
   childCount: { type: Number, required: true },
   facilities: [{ type: String, required: true }],
   pricePerNight: { type: Number, required: true },
-  starRating: { type: Number, required: true, min: 1 }, 
+  starRating: { type: Number, required: true, min: 1 },
   imageUrls: [{ type: String, required: true }],
   lastUpdated: { type: Date, required: true },
-  newProperty: { type: String } 
+  newProperty: { type: String },
+  // Linked booking schema here to hotel schema above
+  bookings: [bookingSchema],
 });
 
 // Define the Hotel model
-const Hotel = mongoose.model<HotelType>("Hotel", hotelSchema);
+const Hotel = mongoose.model<HotelType & Document>("Hotel", hotelSchema);
 
 export default Hotel;
