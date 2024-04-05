@@ -15,7 +15,7 @@ const bookingSchema = new mongoose.Schema<BookingType>({
 });
 
 // Define the schema for the Hotel document
-const hotelSchema: Schema<HotelType & Document> = new Schema({
+const hotelSchema: Schema<HotelType> = new Schema({
   _id: { type: String, required: true },
   name: { type: String, required: true },
   city: { type: String, required: true },
@@ -35,6 +35,7 @@ const hotelSchema: Schema<HotelType & Document> = new Schema({
 });
 
 // Define the Hotel model
-const Hotel = mongoose.model<HotelType & Document>("Hotel", hotelSchema);
+const Hotel = mongoose.model<HotelType>("Hotel", hotelSchema);
 
-export default Hotel;
+
+export default  Hotel;

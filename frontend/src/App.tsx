@@ -35,10 +35,10 @@ const App = () => {
   );
 }
 
-// Home Page component
-const HomePage = () => {
-  return <p>Home Page</p>;
-}
+// // Home Page component
+// const Home= () => {
+//   return <p>Home Page</p>;
+// }
 
 // Search Page component
 const Search = () => {

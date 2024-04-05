@@ -1,10 +1,12 @@
 import express, { Request, Response } from "express";
-import Hotel, { HotelType } from "../models/hotel";
+import Hotel from "../models/hotel";
+import { HotelType } from "../shared/types";
 import { BookingType, HotelSearchResponse } from "../shared/types";
 import { ParsedQs } from "qs";
 import { param, validationResult } from "express-validator";
 import Stripe from "stripe";
 import verifyToken from "../middleware/auth";
+
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 
@@ -68,7 +70,7 @@ router.get("/search", async (req: Request, res: Response) => {
         const hotels = await Hotel.find(query)
             .sort(sortOptions)
             .skip(skip)
-            .limit(pageSize) as Omit<HotelType, "userId">[];
+            .limit(pageSize) as HotelType[];
 
         // Count total number of hotels matching the query for pagination
         const total = await Hotel.countDocuments(query);
@@ -90,6 +92,7 @@ router.get("/search", async (req: Request, res: Response) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
+
 
 router.post("/:hotelId/bookings/payment-intent", verifyToken, async (req: Request, res: Response) => {
     try {
