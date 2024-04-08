@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { HotelType } from "../../../backend/src/models/hotel";
 import { AiFillStar } from "react-icons/ai";
+import { HotelType } from "../../../backend/src/shared/types";
 
 type Props = {
   hotel: HotelType;

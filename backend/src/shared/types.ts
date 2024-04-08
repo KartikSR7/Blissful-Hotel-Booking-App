@@ -58,3 +58,36 @@ export type HotelType = {
     clientSecret: string;
     totalCost: number;
   }
+
+  //dynamic pricng 
+
+  export type RoomType = string;
+
+export interface PricingInput {
+  roomType: RoomType;
+  checkInDate: Date;
+  checkOutDate: Date;
+}
+
+export interface RoomData {
+  basePrice: number;
+  // Add any other relevant room data properties
+}
+
+export interface OccupancyData {
+    occupancyPercentage: number;
+  // Add relevant occupancy data properties
+}
+
+export interface CompetitorData {
+    basePrice: any;
+    averageRating: any;
+    location: any;
+    services: any[];
+  // Add relevant competitor data properties
+}
+export interface SeasonalData {
+  currentSeason: any;
+  isSpecialEvent: any;
+// Add relevant occupancy data properties
+}

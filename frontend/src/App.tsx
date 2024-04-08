@@ -1,14 +1,15 @@
-import { BrowserRouter as Router, Route, Routes, Navigate, Search } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./layout/Layout";
 import Register from "./pages/Register";
 import SignIn from "./pages/SignIn";
 import AddHotel from "./pages/AddHotel";
-import { useAppContext } from "./contexts/AppContext";
+//import { useAppContext } from "./contexts/AppContext";
 import EditHotel from "./pages/EditHotel";
 import Detail from "./pages/Detail";
 import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
+import { useAppContext } from "./contexts/useAppContext";
 // import Search from "./pages/Search";
 
 const App = () => {

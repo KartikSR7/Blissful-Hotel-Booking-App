@@ -1,6 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
-type SearchContext = {
+export type SearchContextType = {
     destination: string;
     checkIn: Date;
     checkOut: Date;
@@ -13,39 +13,48 @@ type SearchContext = {
         checkOut: Date,
         adultCount: number,
         childCount: number,
-        hotelId?: string // Make hotelId optional
+        hotelId?: string
     ) => void;
 };
 
-// Create a Search context and specify the type created above
-// Default it to undefined so the first time the app loads it will be undefined
-const SearchContext = React.createContext<SearchContext | undefined>(undefined);
+export const SearchContext = React.createContext<SearchContextType | undefined>(undefined);
 
 type SearchContextProviderProps = {
     children: React.ReactNode;
 };
 
-// Define the variable for searching
 export const SearchContextProvider = ({ children }: SearchContextProviderProps) => {
     const [destination, setDestination] = useState<string>(
-        ()=>  sessionStorage.getItem('destination') || "");
-     //(|| '' to pass an empty string if there is empty value is session storage)
-    const [checkIn, setCheckIn] = useState<Date>(new Date( sessionStorage.getItem("checkIn") || new Date().toISOString()));
-    const [checkOut, setCheckOut] = useState<Date>(new Date(sessionStorage.getItem("checkOut") || new Date().toISOString()));
-    const [adultCount, setAdultCount] = useState<number>(()=>parseInt(sessionStorage.getItem("adultCount") || "1"));
-    const [childCount, setChildCount] = useState<number>(()=>parseInt(sessionStorage.getItem("childCount") || "1"));
+        () => sessionStorage.getItem('destination') || ""
+    );
+
+    const [checkIn, setCheckIn] = useState<Date>(
+        () => new Date(sessionStorage.getItem("checkIn") || new Date().toISOString())
+    );
+
+    const [checkOut, setCheckOut] = useState<Date>(
+        () => new Date(sessionStorage.getItem("checkOut") || new Date().toISOString())
+    );
+
+    const [adultCount, setAdultCount] = useState<number>(
+        () => parseInt(sessionStorage.getItem("adultCount") || "1")
+    );
+
+    const [childCount, setChildCount] = useState<number>(
+        () => parseInt(sessionStorage.getItem("childCount") || "1")
+    );
+
     const [hotelId, setHotelId] = useState<string>(
         () => sessionStorage.getItem("hotelId") || ""
     );
 
-    // Define the function to update the variable
     const saveSearchValues = (
         destination: string,
         checkIn: Date,
-        checkOut: Date, 
+        checkOut: Date,
         adultCount: number,
         childCount: number,
-        hotelId?: string // Making  hotelId optional
+        hotelId?: string
     ) => {
         setDestination(destination);
         setCheckIn(checkIn);
@@ -62,7 +71,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
         sessionStorage.setItem("adultCount", adultCount.toString());
         sessionStorage.setItem("childCount", childCount.toString());
 
-        if(hotelId){
+        if (hotelId) {
             sessionStorage.setItem("hotelId", hotelId);
         }
     };
@@ -79,14 +88,7 @@ export const SearchContextProvider = ({ children }: SearchContextProviderProps) 
                 saveSearchValues,
             }}
         >
-            {/* children variable comes from the prop in the provider component */}
             {children}
         </SearchContext.Provider>
     );
-};
-
-// Creating a hook for easy access to above properties
-export const useSearchContext = () => {
-    const context = useContext(SearchContext);
-    return context as SearchContext;
 };

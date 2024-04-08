@@ -2,12 +2,14 @@ import { useForm } from "react-hook-form";
 import { PaymentIntentResponse, UserType } from "../../../../../backend/src/shared/types";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripeCardElement } from "@stripe/stripe-js";
-import { useSearchContext } from "../../../contexts/SearchContext";
+///import { useSearchContext } from "../../../contexts/SearchContext";
 import {  useParams } from "react-router-dom";
 
 import { useMutation } from "react-query";
 import * as apiClient from '/Users/kartiksally/Desktop/Blissful-Hotel-Booking-App/frontend/src/api-client.ts';
-import { useAppContext } from "../../../contexts/AppContext";
+//import { AppContext } from "../../../contexts/AppContext";
+import { useAppContext } from "../../../contexts/useAppContext";
+import { useSearchContext } from "../../../contexts/useSearchContext";
 
 
 type Props = {

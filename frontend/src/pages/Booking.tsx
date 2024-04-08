@@ -4,9 +4,11 @@ import BookingForm from "../forms/ManageHotelForm/BookingForm/BookingForm";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import BookingDetailSummary from "../components/BookingDetailsSummary";
-import { useSearchContext } from "../contexts/SearchContext";
+//import { useSearchContext } from "../contexts/SearchContext";
 import { Elements } from "@stripe/react-stripe-js";
-import { useAppContext } from "../contexts/AppContext";
+import { useSearchContext } from "../contexts/useSearchContext";
+import { useAppContext } from "../contexts/useAppContext";
+//import { useAppContext } from "../contexts/AppContext";
 
 
 const Booking = () => {

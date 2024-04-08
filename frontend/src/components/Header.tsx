@@ -1,8 +1,10 @@
 // Importing the Link component from react-router-dom to create navigation links
 import { Link } from "react-router-dom";
 // Importing the useAppContext hook from the AppContext module to access application context
-import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "./SignOutButton";
+import useAppContext from "../contexts/useAppContext";
+//import { useAppContext } from "../contexts/useAppContext";
+
 
 // Header component definition
 const Header = () => {

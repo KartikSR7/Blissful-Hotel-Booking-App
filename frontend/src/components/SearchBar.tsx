@@ -1,9 +1,10 @@
 import { FormEvent, useState } from "react";
-import { useSearchContext } from "../contexts/SearchContext";
+//import { useSearchContext } from "../contexts/SearchContext";
 import { MdTravelExplore } from "react-icons/md";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Import CSS for DatePicker
 import { useNavigate } from "react-router-dom";
+import { useSearchContext } from "../contexts/useSearchContext";
 
 const SearchBar = () => {
   const navigate = useNavigate(); // Access navigation functions from React Router

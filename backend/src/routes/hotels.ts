@@ -1,11 +1,12 @@
 import express, { Request, Response } from "express";
-import Hotel from "../models/hotel";
-import { HotelType } from "../shared/types";
-import { BookingType, HotelSearchResponse } from "../shared/types";
+// import Hotel from "../models/hotel";
+// import { HotelType } from "../shared/types";
+import { BookingType, HotelSearchResponse, HotelType } from "../shared/types";
 import { ParsedQs } from "qs";
 import { param, validationResult } from "express-validator";
 import Stripe from "stripe";
 import verifyToken from "../middleware/auth";
+import Hotel from "../models/hotel";
 
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
@@ -24,7 +25,6 @@ router.get("/", async (req: Request,  res: Response) =>{
 })
 
 router.get("/:id", [
-
     param("id").notEmpty().withMessage("Hotel ID is required")
 ], async (req: Request, res: Response) => {
     const errors = validationResult(req);
@@ -107,20 +107,21 @@ router.post("/:hotelId/bookings/payment-intent", verifyToken, async (req: Reques
         const totalCost = hotel.pricePerNight * numberOfNights;
 
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: totalCost*100,  // Stripe uses pence not pounds £1=100p
+            amount: totalCost * 100, // Stripe uses pence not pounds £1=100p
             currency: "gbp",
             metadata: {
                 hotelId,
-                userId: req.userId,
+                userId: req.userId ?? null,
             },
         });
+
         if (!paymentIntent.client_secret) {
             return res.status(500).json({ message: "Error creating payment intent" });
         }
 
         const response = {
             paymentIntentId: paymentIntent.id,
-            clientSecret: paymentIntent.client_secret.toString(),
+            clientSecret: paymentIntent.client_secret?.toString() ?? null,
             totalCost,
         };
 
@@ -130,6 +131,7 @@ router.post("/:hotelId/bookings/payment-intent", verifyToken, async (req: Reques
         res.status(500).json({ message: "Something went wrong while creating payment intent" });
     }
 });
+
 
 router.post("/:hotelId/bookings", verifyToken, async (req: Request, res: Response) => {
     try {

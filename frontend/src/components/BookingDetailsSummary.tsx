@@ -1,4 +1,6 @@
-import { HotelType } from "../../../backend/src/models/hotel";
+
+import { HotelType } from "../../../backend/src/shared/types";
+
 
 type Props = {
     checkIn: Date;
