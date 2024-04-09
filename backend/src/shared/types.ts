@@ -64,30 +64,51 @@ export type HotelType = {
   export type RoomType = string;
 
 export interface PricingInput {
+  hotelId: string;
   roomType: RoomType;
   checkInDate: Date;
   checkOutDate: Date;
 }
 
 export interface RoomData {
+  _id: string;
+  hotelId: string; // Reference to the hotel in the "hotels" collection
+  roomType: string;
   basePrice: number;
-  // Add any other relevant room data properties
+
 }
 
 export interface OccupancyData {
-    occupancyPercentage: number;
-  // Add relevant occupancy data properties
+  _id: string;
+  hotelId: string; // Reference to the hotel in the "hotels" collection
+  roomType: string;
+  checkInDate: Date;
+  checkOutDate: Date;
+  occupancyPercentage: number;
+  totalRooms: number;
+  occupiedRooms: number;
+ 
 }
 
 export interface CompetitorData {
-    basePrice: any;
-    averageRating: any;
-    location: any;
-    services: any[];
-  // Add relevant competitor data properties
+  _id: string;
+  hotelId: string; // Reference to the hotel in the "hotels" collection
+  roomType: string;
+  checkInDate: Date;
+  checkOutDate: Date;
+  basePrice: number;
+  averageRating: number;
+  location: string;
+  services: string[];
+  
 }
+
 export interface SeasonalData {
-  currentSeason: any;
-  isSpecialEvent: any;
-// Add relevant occupancy data properties
+  _id: string;
+  hotelId: string; // Reference to the hotel in the "hotels" collection
+  checkInDate: Date;
+  checkOutDate: Date;
+  currentSeason: string;
+  isSpecialEvent: boolean;
+  
 }

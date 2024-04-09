@@ -17,7 +17,10 @@ const PricingComponent: React.FC<PricingComponentProps> = ({ roomTypes }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const pricingInput: PricingInput = { roomType, checkInDate, checkOutDate };
+            const pricingInput: PricingInput = {
+                roomType, checkInDate, checkOutDate,
+                hotelId: ''
+            };
             const response = await axios.post('/api/price', pricingInput);
             setDynamicPrice(response.data.price);
         } catch (error) {
