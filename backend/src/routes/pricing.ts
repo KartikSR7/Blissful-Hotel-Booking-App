@@ -1,7 +1,12 @@
 // pricing.ts
-import { CompetitorData, OccupancyData, RoomData, SeasonalData,  RoomType, PricingInput} from '../shared/types';
+import { OccupancyData, RoomData, SeasonalData, RoomType, PricingInput } from '../shared/types';
 //import { RoomType, PricingInput } from '../shared/types';
 import axios from 'axios';
+import CompetitorData from './CompetitorData';
+
+
+
+
 
 
 
@@ -121,17 +126,25 @@ async function getOccupancyData(hotelId: string, checkInDate: Date, checkOutDate
 
 async function getCompetitorData(roomType: RoomType, checkInDate: Date, checkOutDate: Date): Promise<CompetitorData> {
   // Fetching competitor data from the database
-  return {
-    _id: '1',
-    hotelId: '2',
-    roomType,
-    checkInDate,
-    checkOutDate,
-    basePrice: 120,
-    averageRating: 4.2,
-    location: 'downtown',
-    services: ['spa', 'gym'],
-  };
+  try {
+    // Fetch competitor data from the competitor's website
+    const competitorData: CompetitorData = await data(roomType, checkInDate, checkOutDate);
+    return competitorData;
+  } catch (error) {
+    console.error('Error fetching competitor data:', error);
+    throw error;
+  }
+  // return {
+  //   _id: '1',
+  //   hotelId: '2',
+  //   roomType,
+  //   checkInDate,
+  //   checkOutDate,
+  //   basePrice: 120,
+  //   averageRating: 4.2,
+  //   location: 'downtown',
+  //   services: ['spa', 'gym'],
+  // };
 }
 
 async function getSeasonalData(hotelId: string, checkInDate: Date, checkOutDate: Date): Promise<SeasonalData> {
@@ -144,4 +157,8 @@ async function getSeasonalData(hotelId: string, checkInDate: Date, checkOutDate:
     currentSeason: 'high',
     isSpecialEvent: false,
   };
+}
+
+function data(roomType: string, checkInDate: Date, checkOutDate: Date): CompetitorData | PromiseLike<CompetitorData> {
+  throw new Error('Function not implemented.');
 }

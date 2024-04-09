@@ -101,6 +101,7 @@ export interface CompetitorData {
   location: string;
   services: string[];
   
+  
 }
 
 export interface SeasonalData {
