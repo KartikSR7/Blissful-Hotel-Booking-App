@@ -1,3 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Import base styles from Tailwind CSS */
+@layer base {
+    @import 'tailwindcss/base';
+}
+
+/* Import component styles from Tailwind CSS */
+@layer components {
+    @import 'tailwindcss/components';
+}
+
+/* Import utility styles from Tailwind CSS */
+@layer utilities {
+    @import 'tailwindcss/utilities';
+}

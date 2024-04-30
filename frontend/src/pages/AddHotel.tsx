@@ -1,13 +1,13 @@
 import { useMutation } from "react-query";
 import ManageHotelForm from "../forms/ManageHotelForm/ManageHotelForm";
-import { useAppContext } from "../contexts/AppContext";
 import * as apiClient from '../api-client';
+import useAppContext from "../contexts/useAppContext";
 
 const AddHotel = () => {
     // Access showToast function from AppContext
     const { showToast } = useAppContext();
 
-    // Define mutation function to add hotel
+    // Define mutation function to add hotelh
     const { mutate, isLoading } = useMutation(apiClient.addMyHotel, {
         // onSuccess callback function to handle successful mutation
         onSuccess: () => {

@@ -59,6 +59,7 @@ async function fetchDataFromCompetitorB(page: Page, roomType: RoomType, checkInD
   const averageRating = await page.$eval('.hotel-rating', (el) => parseFloat(el.textContent || '0'));
   const location = await page.$eval('.hotel-location', (el) => el.textContent || 'unknown');
   const services = await page.$$eval('.hotel-amenities li', (els) => els.map((el) => el.textContent || ''));
+  //(el: stands for elemenet  in this case,parseFloat is a built-in JavaScript function used to parse a string argument and return a floating point number )
 
   return {
     _id: '', 
