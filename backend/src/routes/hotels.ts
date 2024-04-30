@@ -1,80 +1,84 @@
+// Importing necessary modules
 import express, { Request, Response } from "express";
-// import Hotel from "../models/hotel";
-// import { HotelType } from "../shared/types";
 import { BookingType, HotelSearchResponse, HotelType } from "../shared/types";
-import { ParsedQs } from "qs";
-import { param, validationResult } from "express-validator";
-import Stripe from "stripe";
-import verifyToken from "../middleware/auth";
-import Hotel from "../models/hotel";
+import { ParsedQs } from "qs"; // Importing a type from the 'qs' library
+import { param, validationResult } from "express-validator"; // Importing validation functions from Express Validator
+import Stripe from "stripe"; // Importing the Stripe library for payment processing
+import verifyToken from "../middleware/auth"; // Importing authentication middleware
+import Hotel from "../models/hotel"; // Importing the Hotel model
 
-
+// Creating a new instance of Stripe with the API key
 const stripe = new Stripe(process.env.STRIPE_API_KEY as string);
 
+// Creating a router instance from Express
 const router = express.Router();
 
-router.get("/", async (req: Request,  res: Response) =>{
-    try{
-        const hotels = await Hotel.find().sort("-lastUpdated");
-        res.json(hotels);
-    }catch(error){
-     console.log("error", error);
-     res.status(500).json({message: "Error fetching hotels"});
-    }
-
-})
-
-router.get("/:id", [
-    param("id").notEmpty().withMessage("Hotel ID is required")
-], async (req: Request, res: Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    const id = req.params.id.toString();
+// Route to fetch all hotels
+router.get("/", async (req: Request, res: Response) =>{
     try {
-        const hotel = await Hotel.findById(id);
-        res.json(hotel);
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Something went wrong with Fetching Hotels" });
-
+        // Fetching all hotels and sorting them based on the 'lastUpdated' field
+        const hotels = await Hotel.find().sort("-lastUpdated");
+        res.json(hotels); // Sending the fetched hotels as JSON response
+    } catch(error) {
+        console.log("error", error); // Logging any errors that occur
+        res.status(500).json({message: "Error fetching hotels"}); // Sending an error response if fetching fails
     }
-})
+});
 
+// Route to fetch a single hotel by its ID
+router.get("/:id", [
+    param("id").notEmpty().withMessage("Hotel ID is required") // Validation for hotel ID parameter
+], async (req: Request, res: Response) => {
+    const errors = validationResult(req); // Checking for validation errors
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() }); // Sending validation errors as response if any
+    }
+
+    const id = req.params.id.toString(); // Extracting hotel ID from request parameters
+    try {
+        const hotel = await Hotel.findById(id); // Finding a hotel by its ID
+        res.json(hotel); // Sending the fetched hotel as JSON response
+    } catch (error) {
+        console.log(error); // Logging any errors that occur
+        res.status(500).json({ message: "Something went wrong with Fetching Hotels" }); // Sending an error response if fetching fails
+    }
+});
+
+// Route to search hotels based on query parameters
 router.get("/search", async (req: Request, res: Response) => {
     try {
-        // Construct the search query based on the request parameters
+        // Constructing search query based on request parameters
         const query = constructSearchQuery(req.query);
 
+        // Sorting options based on request parameters
         let sortOptions: any = {};
         switch (req.query.sortOption) {
             case "starRating":
-                // to sort the results based on str rating from highest to low that is why -1
-                sortOptions = { starRating: -1 };
+                sortOptions = { starRating: -1 }; // Sorting by star rating in descending order
                 break;
             case "pricePerNightAsc":
-                sortOptions = { pricePerNight: 1 };
+                sortOptions = { pricePerNight: 1 }; // Sorting by price per night in ascending order
                 break;
             case "pricePerNightDesc":
-                sortOptions = { pricePerNight: -1 };
+                sortOptions = { pricePerNight: -1 }; // Sorting by price per night in descending order
                 break;
         }
-        const pageSize = 5; // Number of hotels per page
-        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1");
-        const skip = (pageNumber - 1) * pageSize;
 
-        // Find hotels matching the query, skipping and limiting based on pagination
+        // Pagination variables
+        const pageSize = 5; // Number of hotels per page
+        const pageNumber = parseInt(req.query.page ? req.query.page.toString() : "1"); // Current page number
+        const skip = (pageNumber - 1) * pageSize; // Number of documents to skip
+
+        // Finding hotels matching the query, sorting and paginating
         const hotels = await Hotel.find(query)
             .sort(sortOptions)
             .skip(skip)
             .limit(pageSize) as HotelType[];
 
-        // Count total number of hotels matching the query for pagination
+        // Counting total number of hotels matching the query for pagination
         const total = await Hotel.countDocuments(query);
 
+        // Constructing response object with hotels and pagination details
         const response: HotelSearchResponse = {
             data: hotels,
             pagination: {
@@ -84,133 +88,123 @@ router.get("/search", async (req: Request, res: Response) => {
             }
         };
 
-        // Send the response containing hotels and pagination details
+        // Sending the response
         res.json(response);
     } catch (error) {
-        // Handle any errors that occur during the search process
-        console.log("error", error);
-        res.status(500).json({ message: "Something went wrong" });
+        console.log("error", error); // Logging any errors that occur
+        res.status(500).json({ message: "Something went wrong" }); // Sending an error response if searching fails
     }
 });
 
-
+// Route to create a payment intent for booking
 router.post("/:hotelId/bookings/payment-intent", verifyToken, async (req: Request, res: Response) => {
     try {
-        const { numberOfNights } = req.body;
-        const hotelId = req.params.hotelId;
+        const { numberOfNights } = req.body; // Extracting number of nights from request body
+        const hotelId = req.params.hotelId; // Extracting hotel ID from request parameters
 
-        const hotel = await Hotel.findById(hotelId);
+        const hotel = await Hotel.findById(hotelId); // Finding hotel by ID
         if (!hotel) {
-            return res.status(400).json({ message: "Hotel not found" });
+            return res.status(400).json({ message: "Hotel not found" }); // Sending error response if hotel not found
         }
 
-        const totalCost = hotel.pricePerNight * numberOfNights;
+        const totalCost = hotel.pricePerNight * numberOfNights; // Calculating total cost of booking
 
+        // Creating a payment intent with Stripe
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: totalCost * 100, // Stripe uses pence not pounds £1=100p
-            currency: "gbp",
+            amount: totalCost * 100, // Converting total cost to cents
+            currency: "gbp", // Setting currency to GBP
             metadata: {
                 hotelId,
-                userId: req.userId ?? null,
+                userId: req.userId ?? null, // Adding metadata for hotel ID and user ID
             },
         });
 
-        if (!paymentIntent.client_secret) {
-            return res.status(500).json({ message: "Error creating payment intent" });
-        }
-
+        // Sending the payment intent details as response
         const response = {
             paymentIntentId: paymentIntent.id,
             clientSecret: paymentIntent.client_secret?.toString() ?? null,
             totalCost,
         };
 
-        res.send(response);
+        res.send(response); // Sending the response
     } catch (error) {
-        console.log("Error creating payment intent:", error);
-        res.status(500).json({ message: "Something went wrong while creating payment intent" });
+        console.log("Error creating payment intent:", error); // Logging any errors that occur
+        res.status(500).json({ message: "Something went wrong while creating payment intent" }); // Sending an error response if creation fails
     }
 });
 
-
+// Route to create a booking
 router.post("/:hotelId/bookings", verifyToken, async (req: Request, res: Response) => {
     try {
-        const paymentIntentId = req.body.paymentId;
+        const paymentIntentId = req.body.paymentId; // Extracting payment intent ID from request body
 
-        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId); // Retrieving payment intent from Stripe
 
         if (!paymentIntent) {
-            return res.status(400).json({ message: "Payment intent not found" });
+            return res.status(400).json({ message: "Payment intent not found" }); // Sending error response if payment intent not found
         }
 
+        // Checking if payment intent matches the hotel ID and user ID
         if (paymentIntent.metadata.hotelId !== req.params.hotelId 
             || paymentIntent.metadata.userId !== req.userId) {
-            return res.status(400).json({ message: "Payment intent mismatch" });
+            return res.status(400).json({ message: "Payment intent mismatch" }); // Sending error response if mismatch
         }
 
+        // Checking if payment is successful
         if (paymentIntent.status !== "succeeded") {
-            return res.status(400).json({ message: `Payment is not successful yet. Status: ${paymentIntent.status}` });
+            return res.status(400).json({ message: `Payment is not successful yet. Status: ${paymentIntent.status}` }); // Sending error response if payment is not successful
         }
 
-        // Assuming BookingType is defined somewhere
+        // Creating a new booking object
         const newBooking: BookingType = {
-            // Assuming req.body contains booking information
-            ...req.body,
-            userId: req.userId
+            ...req.body, // Assuming req.body contains booking information
+            userId: req.userId // Adding user ID to the booking
         };
 
-    const hotel  = await Hotel.findOneAndUpdate(
-        { _id: req.params.hotelId},
-        {
-            $push: { bookings : newBooking},
+        // Finding the hotel by ID and adding the new booking
+        const hotel = await Hotel.findOneAndUpdate(
+            { _id: req.params.hotelId },
+            { $push: { bookings: newBooking } }
+        );
+
+        if (!hotel) {
+            return res.status(400).json({ message: "Hotel does not exist!" }); // Sending error response if hotel does not exist
         }
-    );
 
-    if(!hotel){
-        return res.status(400).json({message: "Hotel does not exist!"})
-    }
-
-    await hotel.save();
-    res.status(200).send();
-
-        // Proceed to create the booking with the newBooking object
-
-        // Return success response
-        return res.status(200).json({ message: "Booking created successfully", booking: newBooking });
+        await hotel.save(); // Saving the hotel after adding the booking
+        res.status(200).send(); // Sending success response
     } catch (error) {
-        console.error("Error creating booking:", error);
-        return res.status(500).json({ message: "Something went wrong while creating booking" });
+        console.error("Error creating booking:", error); // Logging any errors that occur
+        return res.status(500).json({ message: "Something went wrong while creating booking" }); // Sending error response if creation fails
     }
 });
 
 // Function to construct the search query based on request parameters
 const constructSearchQuery = (queryParams: ParsedQs) => {
-    const constructedQuery: any = {};
+    const constructedQuery: any = {}; // Initializing an empty object for the query
 
     if (queryParams.destination) {
         constructedQuery.$or = [
             { city: new RegExp(queryParams.destination as string, "i") },
             { country: new RegExp(queryParams.destination as string, "i") }
-        ];
+        ]; // Adding destination search condition to the query
     }
 
-    // Add filters based on request parameters
+    // Adding filters based on request parameters
     if (queryParams.adultCount) {
         constructedQuery.adultCount = { $gte: parseInt(queryParams.adultCount as string) };
     }
 
     if (queryParams.facilities) {
         constructedQuery.facilities = {
-            // Finding the hotels that have all the facilities as selected
             $all: Array.isArray(queryParams.facilities) ? queryParams.facilities : [queryParams.facilities]
-        };
+        }; // Adding facilities filter to the query
     }
 
     if (queryParams.types) {
         constructedQuery.type = {
-            // Checking if we received one type or many types
             $in: Array.isArray(queryParams.types) ? queryParams.types : [queryParams.types]
-        };
+        }; // Adding types filter to the query
     }
 
     if (queryParams.stars) {
@@ -218,17 +212,16 @@ const constructSearchQuery = (queryParams: ParsedQs) => {
             queryParams.stars.map((star) => parseInt(star as string)) :
             [parseInt(queryParams.stars as string)];
 
-        constructedQuery.starRating = { $in: starRatings };
+        constructedQuery.starRating = { $in: starRatings }; // Adding star ratings filter to the query
     }
 
     if (queryParams.maxPrice) {
         constructedQuery.pricePerNight = {
-            // Where max price per night is less than or equal to
             $lte: parseInt(queryParams.maxPrice as string)
-        };
+        }; // Adding max price filter to the query
     }
 
-    return constructedQuery;
+    return constructedQuery; // Returning the constructed query
 }
 
-export default router;
+export default router; // Exporting the router instance
