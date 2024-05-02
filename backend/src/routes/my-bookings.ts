@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
 import verifyToken from '../middleware/auth';
-import  { HotelType } from '../shared/types';
+import { HotelType } from '../shared/types';
 import Hotel from "../models/hotel";
+//import { getRoomData, getOccupancyData, getCompetitorData, getSeasonalData } from './pricing';
 
 const router = express.Router();
 
@@ -29,7 +30,7 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
       return hotelWithUserBookings;
     });
     res.status(200).send(results);
-    
+
     // Send the results back to the client
     res.json(results);
   } catch (error) {
@@ -37,5 +38,7 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
     res.status(500).json({ message: "Unable to fetch bookings" });
   }
 });
+
+
 
 export default router;

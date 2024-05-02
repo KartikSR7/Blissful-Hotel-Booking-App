@@ -7,6 +7,10 @@ async function fetchCompetitorData(roomType: RoomType, checkInDate: Date, checkO
 
   const competitorData: CompetitorData[] = [];
 
+  //Here Competitor A: Booking.com
+  //     Competitor B: TripAdvisor 
+  //     Competitor C: Hotel.com
+
   try {
     // Fetch data from Competitor A
     const competitorAData = await fetchDataFromCompetitorA(page, roomType, checkInDate, checkOutDate);
@@ -28,7 +32,7 @@ async function fetchCompetitorData(roomType: RoomType, checkInDate: Date, checkO
     await browser.close();
   }
 }
-
+// Fetches competitor data from Competitor A's website.
 async function fetchDataFromCompetitorA(page: Page, roomType: RoomType, checkInDate: Date, checkOutDate: Date): Promise<CompetitorData> {
   // Navigate to Competitor A's website and extract the relevant data
   await page.goto(`https://www.booking.com/index.en-gb.html=${checkInDate}&checkout=${checkOutDate}&room_type=${roomType}`);
@@ -51,6 +55,7 @@ async function fetchDataFromCompetitorA(page: Page, roomType: RoomType, checkInD
   };
 }
 
+// Fetches competitor data from Competitor B's website.
 async function fetchDataFromCompetitorB(page: Page, roomType: RoomType, checkInDate: Date, checkOutDate: Date): Promise<CompetitorData> {
   // Navigate to Competitor B's website and extract the relevant data
   await page.goto(`https://www.tripadvisor.co.uk/Hotels-g186334-Leicester_Leicestershire_England-Hotels.html=${checkInDate}&checkout=${checkOutDate}&room_type=${roomType}`);
