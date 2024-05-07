@@ -1,77 +1,132 @@
+// Importing necessary modules and functions
 import express, { Request, Response } from 'express';
 import { PricingInput } from '../shared/types';
-import { calculateDynamicPrice, getRoomData, getOccupancyData, getCompetitorData, getSeasonalData } from './pricing';
+import {
+  calculateDynamicPrice,
+  getRoomData,
+  getOccupancyData,
+  getCompetitorData,
+  getSeasonalData,
+} from './pricing';
 
+// Creating an instance of the Express router
 const router = express.Router();
 
+// POST /price endpoint to calculate dynamic price
 router.post('/price', async (req: Request, res: Response) => {
-try {
-const { roomType, checkInDate, checkOutDate }: PricingInput = req.body;
+  try {
+    // Destructuring the required fields from the request body
+    const { roomType, checkInDate, checkOutDate }: PricingInput = req.body;
 
-if (!roomType || !checkInDate || !checkOutDate) {
-return res.status(400).json({ error: 'Missing required fields' });
-}
+    // Validating the required fields
+    if (!roomType || !checkInDate || !checkOutDate) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
 
-const dynamicPrice = await calculateDynamicPrice({
-roomType,
-checkInDate,
-checkOutDate,
-hotelId: '' // Update this with actual hotelId logic if needed
+    // Calling the calculateDynamicPrice function with the required fields
+    const dynamicPrice = await calculateDynamicPrice({
+      roomType,
+      checkInDate,
+      checkOutDate,
+      hotelId: '', // Update this with actual hotelId logic if needed
+    });
+
+    // Sending the dynamic price as a JSON response
+    res.json({ price: dynamicPrice });
+  } catch (error: any) {
+    // Logging any errors and sending a 500 Internal Server Error response
+    console.error('Error calculating dynamic price:', error);
+    res.status(500).json({ error: error.message || 'Error calculating dynamic price' });
+  }
 });
 
-res.json({ price: dynamicPrice });
-} catch (error: any) {
-console.error('Error calculating dynamic price:', error);
-res.status(500).json({ error: error.message || 'Error calculating dynamic price' });
-}
-});
-
+// GET /roomData/:hotelId/:roomType endpoint to fetch room data
 router.get('/roomData/:hotelId/:roomType', async (req, res) => {
-try {
-const { hotelId, roomType } = req.params;
-const roomData = await getRoomData(hotelId);
-res.json(roomData);
-} catch (error: any) {
-console.error('Error fetching room data:', error);
-res.status(500).json({ error: error.message || 'Error fetching room data' });
-}
+  try {
+    // Destructuring the required fields from the request parameters
+    const { hotelId, roomType } = req.params;
+
+    // Calling the getRoomData function with the required fields
+    const roomData = await getRoomData(hotelId);
+
+    // Sending the room data as a JSON response
+    res.json(roomData);
+  } catch (error: any) {
+    // Logging any errors and sending a 500 Internal Server Error response
+    console.error('Error fetching room data:', error);
+    res.status(500).json({ error: error.message || 'Error fetching room data' });
+  }
 });
 
-router.get('/occupancyData/:hotelId/:roomType/:checkInDate/:checkOutDate', async (req, res) => {
-try {
-const { hotelId, roomType, checkInDate, checkOutDate } = req.params;
-const occupancyData = await getOccupancyData;
-res.json(occupancyData);
-} catch (error: any) {
-console.error('Error fetching occupancy data:', error);
-res.status(500).json({ error: error.message || 'Error fetching occupancy data' });
-}
-});
+// GET /occupancyData/:hotelId/:roomType/:checkInDate/:checkOutDate endpoint to fetch occupancy data
+router.get(
+  '/occupancyData/:hotelId/:roomType/:checkInDate/:checkOutDate',
+  async (req, res) => {
+    try {
+      // Destructuring the required fields from the request parameters
+      const { hotelId, roomType, checkInDate, checkOutDate } = req.params;
 
-router.get('/competitorData/:roomType/:checkInDate/:checkOutDate', async (req, res) => {
-try {
-const { roomType, checkInDate, checkOutDate } = req.params;
-const competitorData = await getCompetitorData(roomType, new Date(checkInDate), new Date(checkOutDate));
-res.json(competitorData);
-} catch (error: any) {
-console.error('Error fetching competitor data:', error);
-res.status(500).json({ error: error.message || 'Error fetching competitor data' });
-}
-});
+      // Calling the getOccupancyData function with the required fields
+      const occupancyData = await getOccupancyData;
 
-router.get('/seasonalData/:checkInDate/:checkOutDate', async (req, res) => {
-try {
-const { checkInDate, checkOutDate } = req.params;
-const seasonalData = await getSeasonalData
-res.json(seasonalData);
-} catch (error: any) {
-console.error('Error fetching seasonal data:', error);
-res.status(500).json({ error: error.message || 'Error fetching seasonal data' });
-}
-});
+      // Sending the occupancy data as a JSON response
+      res.json(occupancyData);
+    } catch (error: any) {
+      // Logging any errors and sending a 500 Internal Server Error response
+      console.error('Error fetching occupancy data:', error);
+      res.status(500).json({ error: error.message || 'Error fetching occupancy data' });
+    }
+  }
+);
 
+// GET /competitorData/:roomType/:checkInDate/:checkOutDate endpoint to fetch competitor data
+router.get(
+  '/competitorData/:roomType/:checkInDate/:checkOutDate',
+  async (req, res) => {
+    try {
+      // Destructuring the required fields from the request parameters
+      const { roomType, checkInDate, checkOutDate } = req.params;
+
+      // Calling the getCompetitorData function with the required fields
+      const competitorData = await getCompetitorData(
+        roomType,
+        new Date(checkInDate),
+        new Date(checkOutDate)
+      );
+
+      // Sending the competitor data as a JSON response
+      res.json(competitorData);
+    } catch (error: any) {
+      // Logging any errors and sending a 500 Internal Server Error response
+      console.error('Error fetching competitor data:', error);
+      res.status(500).json({ error: error.message || 'Error fetching competitor data' });
+    }
+  }
+);
+
+// GET /seasonalData/:checkInDate/:checkOutDate endpoint to fetch seasonal data
+router.get(
+  '/seasonalData/:checkInDate/:checkOutDate',
+  async (req, res) => {
+    try {
+      // Destructuring the required fields from the request parameters
+      const { checkInDate, checkOutDate } = req.params;
+
+      // Calling the getSeasonalData function with the required fields
+      const seasonalData = await getSeasonalData;
+
+      // Sending the seasonal data as a JSON response
+      res.json(seasonalData);
+    } catch (error: any) {
+      // Logging any errors and sending a 500 Internal Server Error response
+      console.error('Error fetching seasonal data:', error);
+      res.status(500).json({ error: error.message || 'Error fetching seasonal data' });
+    }
+  }
+);
+
+// Exporting the router instance
 export default router;
- 
 
 // // api.ts
 // import express, { Request, Response } from 'express';
