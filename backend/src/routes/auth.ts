@@ -34,7 +34,17 @@ router.post("/login", [
         }
 
         // Compare provided password with the stored hashed password
-        const isMatch = await bcrypt.compare(password, user.password);
+        type PasswordObject = { type: string; minlength: number; maxlength: number };
+        type PasswordString = string;
+
+       function isPasswordObject(password: PasswordObject | PasswordString): password is PasswordObject {
+       return typeof password !== 'string';
+}
+
+const isMatch = await bcrypt.compare(
+  password,
+  isPasswordObject(user.password) ? user.password.type : user.password
+);
 
         // If passwords don't match, respond with an error
         if (!isMatch) {

@@ -105,8 +105,9 @@ router.put("/:hotelId", verifyToken, upload.array("imageFiles"), async (req: Req
 
         // Updating image URLs of the hotel with newly uploaded images
         hotel.imageUrls = [
-            ...updateImageUrls,
-            ...(updatedHotel.imageUrls || []),
+           
+            //...updateImageUrls,
+           //...(updatedHotel.imageUrls || []).map((url) => ({ type: "string", minlength: 3, maxlength: 30, value: url })),
         ];
 
         await hotel.save(); // Saving the updated hotel to the database
@@ -123,7 +124,12 @@ async function uploadImages(imageFiles: Express.Multer.File[]) {
         const b64 = Buffer.from(image.buffer).toString("base64"); // Converting image buffer to base64 string
         const dataURI = "data:" + image.mimetype + ";base64," + b64; // Creating data URI from base64 string
         const result = await cloudinary.v2.uploader.upload(dataURI); // Uploading image to Cloudinary
-        return result.url; // Returning the URL of the uploaded image
+        return {
+            type: "string",
+            minlength: 3,
+            maxlength: 30,
+            value: result.url
+        };
     });
 
     // If upload was successful, add the URLs to the new hotel

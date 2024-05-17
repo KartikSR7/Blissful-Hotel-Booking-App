@@ -95,7 +95,13 @@ router.get("/search", async (req: Request, res: Response) => {
         res.status(500).json({ message: "Something went wrong" }); // Sending an error response if searching fails
     }
 });
-
+function getPricePerNight(hotel: HotelType): number {
+  if (typeof hotel.pricePerNight === 'number') {
+    return hotel.pricePerNight;
+  } else {
+    return hotel.pricePerNight.type;
+  }
+}
 // Route to create a payment intent for booking
 router.post("/:hotelId/bookings/payment-intent", verifyToken, async (req: Request, res: Response) => {
     try {
@@ -106,8 +112,16 @@ router.post("/:hotelId/bookings/payment-intent", verifyToken, async (req: Reques
         if (!hotel) {
             return res.status(400).json({ message: "Hotel not found" }); // Sending error response if hotel not found
         }
+        function getPricePerNight(hotel: HotelType): number {
+            if (typeof hotel.pricePerNight === 'number') {
+                return hotel.pricePerNight;
+            } else {
+                return hotel.pricePerNight.type;
+            }
+        }
 
-        const totalCost = hotel.pricePerNight * numberOfNights; // Calculating total cost of booking
+        const pricePerNight = getPricePerNight(hotel);
+        const totalCost = pricePerNight * numberOfNights; // Calculating total cost of booking
 
         // Creating a payment intent with Stripe
         const paymentIntent = await stripe.paymentIntents.create({

@@ -3,45 +3,97 @@ import Hotel from "../models/hotel";
 
 export type UserType = {
   _id: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  email: {
+    type: string;
+    minlength: 1; // Minimum length of 1 character
+    maxlength: 20; // Maximum length of 20 characters
+  };
+  password: {
+    type: string;
+    minlength: 1; // Minimum length of 1 character
+    maxlength: 15; // Maximum length of 15 characters
+  };
+  firstName: {
+    type: string;
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 30; // Maximum length of 30 characters
+  };
+  lastName: {
+    type: string;
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 30; // Maximum length of 30 characters
+  };
+  phoneNumber: {
+    type: string;
+    minlength: 1; // Minimum length of 1 character
+    maxlength: 11; // Maximum length of 11 characters
+  };
 };
 
 export type HotelType = {
-    
-    _id: string;
-    userId: string;
-    name: string;
-    city: string;
-    country: string;
-    description: string;
+  _id: string;
+  userId: string;
+  name: {
     type: string;
-    adultCount: number;
-    childCount: number;
-    facilities: string[];
-    pricePerNight: number;
-    starRating: number;
-    imageUrls: string[];
-    lastUpdated: Date;
-    newProperty: string; 
-    bookings: BookingType[];
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 30; // Maximum length of 30 characters
   };
+  city: {
+    type: string;
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 30; // Maximum length of 30 characters
+  };
+  country: {
+    type: string;
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 30; // Maximum length of 30 characters
+  };
+  description: {
+    type: string;
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 40; // Maximum length of 40 characters
+  };
+  type: {
+    type: string;
+    minlength: 1; // Minimum length of 1 character
+    maxlength: 20; // Maximum length of 20 characters
+  };
+  adultCount: number;
+  childCount: number;
+  facilities: string[];
+  pricePerNight: {
+    type: number;
+    min: 1; // Minimum value of 1
+    max: 9999.999; // Maximum value of 9999.999
+  };
+  starRating: number;
+  imageUrls: {
+    type: string;
+    minlength: 3; // Minimum length of 3 characters
+    maxlength: 30; // Maximum length of 30 characters
+  }[];
+  lastUpdated: Date;
+  newProperty: string;
+  bookings: BookingType[];
+};
 
-  export type BookingType ={
-    _id: string;
-    userId: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    adultCount: number; 
-    childCount: number; 
-    checkIn: Date; 
-    checkOut: Date;
-    totalCost: number;  
-  }
+export type BookingType = {
+  _id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  adultCount: number;
+  childCount: number;
+  checkIn: Date;
+  checkOut: Date;
+  totalCost: number;
+  cvv: {
+    type: number;
+    minlength: 1; // Minimum length of 1 digit
+    maxlength: 3; // Maximum length of 3 digits
+  };
+};
   export type HotelSearchResponse = {
     data: HotelType[];
     pagination: {
