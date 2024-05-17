@@ -1,32 +1,19 @@
 import Hotel from "../models/hotel";
 
-
 export type UserType = {
   _id: string;
-  email: {
-    type: string;
-    minlength: 1; // Minimum length of 1 character
-    maxlength: 20; // Maximum length of 20 characters
-  };
+  email: string;
   password: {
     type: string;
-    minlength: 1; // Minimum length of 1 character
-    maxlength: 15; // Maximum length of 15 characters
+    minlength: 1;
+    maxlength: 15;
   };
-  firstName: {
-    type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 30; // Maximum length of 30 characters
-  };
-  lastName: {
-    type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 30; // Maximum length of 30 characters
-  };
+  firstName: string;
+  lastName: string;
   phoneNumber: {
     type: string;
-    minlength: 1; // Minimum length of 1 character
-    maxlength: 11; // Maximum length of 11 characters
+    minlength: 1;
+    maxlength: 11;
   };
 };
 
@@ -35,42 +22,42 @@ export type HotelType = {
   userId: string;
   name: {
     type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 30; // Maximum length of 30 characters
+    minlength: 3;
+    maxlength: 30;
   };
   city: {
     type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 30; // Maximum length of 30 characters
+    minlength: 3;
+    maxlength: 30;
   };
   country: {
     type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 30; // Maximum length of 30 characters
+    minlength: 3;
+    maxlength: 30;
   };
   description: {
     type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 40; // Maximum length of 40 characters
+    minlength: 3;
+    maxlength: 40;
   };
   type: {
     type: string;
-    minlength: 1; // Minimum length of 1 character
-    maxlength: 20; // Maximum length of 20 characters
+    minlength: 1;
+    maxlength: 20;
   };
   adultCount: number;
   childCount: number;
   facilities: string[];
   pricePerNight: {
     type: number;
-    min: 1; // Minimum value of 1
-    max: 9999.999; // Maximum value of 9999.999
+    min: 1;
+    max: 9999.999;
   };
   starRating: number;
   imageUrls: {
     type: string;
-    minlength: 3; // Minimum length of 3 characters
-    maxlength: 30; // Maximum length of 30 characters
+    minlength: 3;
+    maxlength: 30;
   }[];
   lastUpdated: Date;
   newProperty: string;
@@ -90,8 +77,8 @@ export type BookingType = {
   totalCost: number;
   cvv: {
     type: number;
-    minlength: 1; // Minimum length of 1 digit
-    maxlength: 3; // Maximum length of 3 digits
+    minlength: 1;
+    maxlength: 3;
   };
 };
   export type HotelSearchResponse = {

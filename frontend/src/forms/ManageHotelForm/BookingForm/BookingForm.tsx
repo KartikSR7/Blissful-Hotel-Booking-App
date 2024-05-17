@@ -1,16 +1,12 @@
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { PaymentIntentResponse, UserType } from "../../../../../backend/src/shared/types";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { StripeCardElement } from "@stripe/stripe-js";
-///import { useSearchContext } from "../../../contexts/SearchContext";
-import {  useParams } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import * as apiClient from '/Users/kartiksally/Desktop/Blissful-Hotel-Booking-App/frontend/src/api-client.ts';
-//import { AppContext } from "../../../contexts/AppContext";
 import { useAppContext } from "../../../contexts/useAppContext";
 import { useSearchContext } from "../../../contexts/useSearchContext";
-
 
 type Props = {
     currentUser: UserType;
@@ -28,27 +24,20 @@ export type BookingFormData = {
     hotelId: string;
     paymentIntentId: string;
     totalCost: number;
-  };
-  
+};
 
 const BookingForm = ({ currentUser, paymentIntent }: Props) => {
-    // Use Stripe hooks to access stripe and elements
     const stripe = useStripe();
     const elements = useElements();
-
-    // Use custom context hooks to access search context and app context
     const search = useSearchContext();
     const { showToast } = useAppContext();
 
-    // UseMutation hook to handle booking room mutation
-    const { mutate: bookRoom, isLoading } = useMutation(apiClient.createRoomBoooking, { // Corrected function name
-        // Handle onSuccess event
+    const { mutate: bookRoom, isLoading } = useMutation(apiClient.createRoomBoooking, {
         onSuccess: () => {
-            showToast({ message: "Booking Saved!", type: "SUCCESS" }); // Show success toast
+            showToast({ message: "Booking Saved!", type: "SUCCESS" });
         },
-        // Handle onError event
         onError: () => {
-            showToast({ message: "Error saving booking", type: "ERROR" }); // Show error toast
+            showToast({ message: "Error saving booking", type: "ERROR" });
         },
     });
 
@@ -67,31 +56,21 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
         }
     });
 
-
-
-
-    const onSubmit = async (formData: BookingFormData) =>{
-        if(!stripe || !elements){
+    const onSubmit: SubmitHandler<BookingFormData> = async (formData) => {
+        if (!stripe || !elements) {
             return;
-        } 
-    const result = await stripe.confirmCardPayment(paymentIntent.clientSecret, {
-        payment_method:{
-            card: elements.getElement(CardElement) as StripeCardElement
         }
-    });
+        const result = await stripe.confirmCardPayment(paymentIntent.clientSecret, {
+            payment_method: {
+                card: elements.getElement(CardElement) as StripeCardElement
+            }
+        });
 
-    if(result.paymentIntent?.status ==  "succeeded"){
-        bookRoom({...formData, paymentIntentId: result.paymentIntent.id});
-
-      } 
+        if (result.paymentIntent?.status === "succeeded") {
+            bookRoom({ ...formData, paymentIntentId: result.paymentIntent.id });
+        }
     };
 
-    
-    // // Handle form submission
-    // const onSubmit = (data: BookingFormData) => {
-    //     // Your submission logic goes here
-    //     console.log(data);
-    // };
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
@@ -99,7 +78,6 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
         >
             <span className="text-3xl font-bold">Confirm Your Details</span>
             <div className="grid grid-cols-2 gap-6">
-                {/* First Name */}
                 <label className="text-gray-700 text-sm font-bold flex-1">
                     First Name
                     <input
@@ -107,10 +85,10 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
                         type="text"
                         readOnly
                         disabled
+                        value={currentUser.firstName}
                         {...register("firstName")}
                     />
                 </label>
-                {/* Last Name */}
                 <label className="text-gray-700 text-sm font-bold flex-1">
                     Last Name
                     <input
@@ -118,10 +96,10 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
                         type="text"
                         readOnly
                         disabled
+                        value={currentUser.lastName}
                         {...register("lastName")}
                     />
                 </label>
-                {/* Email */}
                 <label className="text-gray-700 text-sm font-bold flex-1">
                     Email
                     <input
@@ -129,11 +107,34 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
                         type="text"
                         readOnly
                         disabled
+                        value={currentUser.email}
                         {...register("email")}
                     />
                 </label>
+                <label className="text-gray-700 text-sm font-bold flex-1">
+                    Adult Count
+                    <input
+                        className="mt-1 border rounded w-full py-2 px-3 text-gray-700 font-normal"
+                        type="number"
+                        readOnly
+                        disabled
+                        value={search.adultCount}
+                        {...register("adultCount", { valueAsNumber: true })}
+                    />
+                </label>
+                <label className="text-gray-700 text-sm font-bold flex-1">
+                    Child Count
+                    <input
+                        className="mt-1 border rounded w-full py-2 px-3 text-gray-700 font-normal"
+                        type="number"
+                        readOnly
+                        disabled
+                        value={search.childCount}
+                        {...register("childCount", { valueAsNumber: true })}
+                    />
+                </label>
             </div>
-    
+
             <div className="space-y-2">
                 <h2 className="text-xl font-semibold"> Your Price Summary</h2>
                 <div className="bg-blue-200 p-4 rounded-md">
@@ -143,15 +144,13 @@ const BookingForm = ({ currentUser, paymentIntent }: Props) => {
                     <div className="text-xs">Includes taxes and booking fees.</div>
                 </div>
             </div>
-    
+
             <div className="space-y-2">
                 <h3 className="text-xl font-semibold">Payment Details</h3>
-                {/* Stripe Card Element */}
                 <CardElement id="payment-element" className="border rounded-md p-2 text-sm" />
             </div>
-    
+
             <div className="flex justify-end">
-                {/* Submit Button */}
                 <button
                     disabled={isLoading}
                     type="submit"

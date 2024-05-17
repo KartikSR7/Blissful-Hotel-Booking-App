@@ -1,0 +1,40 @@
+{
+    "_id": {
+      "$oid": "6566072befbb78591fadc606"
+    },
+    "userId": "6554f2ecd4f07417501dcbf1",
+    "name": "Ruchika Hotels",
+    "city": "Leicester",
+    "country": "United Kingdom",
+    "description": " new hotel ...y tyuih yu gui hhtg yiuhd y ",
+    "type": "All Inclusive",
+    "adultCount": {
+      "$numberInt": "2"
+    },
+    "childCount": {
+      "$numberInt": "3"
+    },
+    "facilities": [
+      "Dog friendly",
+      "Breakfast",
+      "Swimming pools",
+      "Spa"
+    ],
+    "pricePerNight": {
+      "$numberInt": "99"
+    },
+    "starRating": {
+      "$numberInt": "5"
+    },
+    "imageUrls": [
+      
+    ],
+    "lastUpdated": {
+      "$date": {
+        "$numberLong": "1701185323228"
+      }
+    },
+    "__v": {
+      "$numberInt": "0"
+    }
+  }
